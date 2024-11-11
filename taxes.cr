@@ -13,6 +13,7 @@ def calc_taxes(income, status = "single")
   index = bracket.index { |high| income < high } || bracket.size
 
   total_taxes = 0
+
   bracket.first(index).zip(percentages.first(index)).reverse.each do |lower, percent|
     diff_to_lower = (income - lower)
     total_taxes += diff_to_lower * percent
@@ -25,18 +26,18 @@ def calc_taxes_v2(income, status = "single")
   bracket = BRACKETS[status]
   percentages = BRACKETS["percent"]
   index = bracket.index { |high| income < high } || bracket.size
-
   total_taxes = 0
-  index.downto(0).each do |index|
-    diff_to_lower = (income - bracket[index])
-    total_taxes += diff_to_lower * percentages[index]
+  (index - 1).downto(0).each do |num|
+    # puts bracket[num]
+    diff_to_lower = (income - bracket[num])
+    total_taxes += diff_to_lower * percentages[num]
     income -= diff_to_lower
   end
   total_taxes
 end
 
-# puts calc_taxes_v2(50_000)
-# puts calc_taxes(50_000)
+# puts calc_taxes_v2(100_000)
+# puts calc_taxes(100_000)
 
 Benchmark.ips do |x|
   x.report("original") do
